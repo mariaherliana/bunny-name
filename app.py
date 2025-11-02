@@ -22,7 +22,10 @@ if not uploaded_files:
     st.stop()
 
 # pattern: find 'Referensi' followed by ':' and capture the following token up to whitespace or a closing parenthesis.
-REFERENSI_RE = re.compile(r"Referensi\s*:\s*([^\s\)\]]+)", flags=re.IGNORECASE)
+REFERENSI_RE = re.compile(
+    r"Referensi\s*:\s*([A-Za-z0-9\-\s\(\)]+?)(?=\s*[\)\]\r\n]|$)",
+    flags=re.IGNORECASE
+)
 
 results = []
 name_counts = defaultdict(int)
