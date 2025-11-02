@@ -140,15 +140,26 @@ with tab2:
             with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
                 for page in pdf.pages:
                     text += page.extract_text() or ""
-
+        
+            # normalize spaces and newlines
+            text = re.sub(r"\s+", " ", text)
+        
+            # capture Masa Pajak (10-2025)
             masa_match = re.search(r"Masa\s+Pajak\s*([0-9]{1,2}-[0-9]{4})", text, re.IGNORECASE)
-            nama_match = re.search(r"A\.2\s+Nama\s*[:\-]?\s*([A-Z0-9\s\.\&\-\(\)]+)", text, re.IGNORECASE)
-            nomor_match = re.search(r"\b([A-Z0-9]{8,})\s+\d{2}-\d{4}", text)
-
+        
+            # capture A.2 Nama : HIGH QUALITY
+            nama_match = re.search(r"A\.2\s+Nama\s*[:\-]?\s*([A-Za-z0-9\.\&\-\s\(\)]+?)(?=\s+A\.3|\s+B\.)", text, re.IGNORECASE)
+        
+            # capture Nomor right before Masa Pajak
+            nomor_match = re.search(r"\b([A-Z0-9]{6,})\s+10-2025\b", text)
+            if not nomor_match:
+                # fallback: find any long alphanumeric near "Masa Pajak"
+                nomor_match = re.search(r"\b([A-Z0-9]{6,})\s+[0-9]{1,2}-[0-9]{4}", text)
+        
             masa = masa_match.group(1).replace("-", "") if masa_match else None
             nama = nama_match.group(1).strip() if nama_match else None
-            nomor = nomor_match.group(1) if nomor_match else None
-
+            nomor = nomor_match.group(1).strip() if nomor_match else None
+        
             return masa, nama, nomor
 
         for uploaded in uploaded_unifikasi:
