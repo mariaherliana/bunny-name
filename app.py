@@ -23,7 +23,7 @@ if not uploaded_files:
 
 # pattern: find 'Referensi' followed by ':' and capture the following token up to whitespace or a closing parenthesis.
 REFERENSI_RE = re.compile(
-    r"Referensi\s*:\s*([A-Za-z0-9\-\s\(\)]+?)(?=\s*[\)\]\r\n]|$)",
+    r"Referensi\s*:\s*([A-Za-z0-9\-\s\(\)]+?)(?=\s*[\r\n]|$|\))",
     flags=re.IGNORECASE
 )
 
