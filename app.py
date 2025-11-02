@@ -57,7 +57,7 @@ for uploaded in uploaded_files:
         status = "No referensi found"
 
     # sanitize filename: keep only safe chars (alphanum, -, _, .)
-    safe_base = re.sub(r"[^A-Za-z0-9\-\_\.]", "_", base_name)
+    safe_base = re.sub(r"[^A-Za-z0-9\-\_\.\s\(\)]", "_", base_name).strip()
 
     # ensure unique names in this batch
     name_counts[safe_base] += 1
