@@ -139,25 +139,23 @@ with tab2:
             text = ""
             with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
                 for page in pdf.pages:
-                    text += page.extract_text() or ""
+                    page_text = page.extract_text() or ""
+                    text += "\n" + page_text
         
-            # normalize spaces and newlines
+            # normalize spaces and case
             text = re.sub(r"\s+", " ", text)
+            upper_text = text.upper()
         
-            # capture Masa Pajak (10-2025)
-            masa_match = re.search(r"Masa\s+Pajak\s*([0-9]{1,2}-[0-9]{4})", text, re.IGNORECASE)
-        
-            # capture A.2 Nama : HIGH QUALITY
-            nama_match = re.search(r"A\.2\s+Nama\s*[:\-]?\s*([A-Za-z0-9\.\&\-\s\(\)]+?)(?=\s+A\.3|\s+B\.)", text, re.IGNORECASE)
-        
-            # capture Nomor right before Masa Pajak
-            nomor_match = re.search(r"\b([A-Z0-9]{6,})\s+10-2025\b", text)
-            if not nomor_match:
-                # fallback: find any long alphanumeric near "Masa Pajak"
-                nomor_match = re.search(r"\b([A-Z0-9]{6,})\s+[0-9]{1,2}-[0-9]{4}", text)
-        
+            # 1️⃣ Masa Pajak
+            masa_match = re.search(r"MASA\s+PAJAK\s*[:\-]?\s*([0-9]{1,2}-[0-9]{4})", upper_text)
             masa = masa_match.group(1).replace("-", "") if masa_match else None
+        
+            # 2️⃣ Nama (A.2)
+            nama_match = re.search(r"A\.2\s+NAMA\s*[:\-]?\s*([A-Z0-9\.\&\-\s\(\)]+?)(?=\s*A\.3|\s+[A-Z]{1,3}\.)", upper_text)
             nama = nama_match.group(1).strip() if nama_match else None
+        
+            # 3️⃣ Nomor (look for a long alphanumeric near header NOMOR)
+            nomor_match = re.search(r"NOMOR\s*[:\-]?\s*([A-Z0-9]{6,})", upper_text)
             nomor = nomor_match.group(1).strip() if nomor_match else None
         
             return masa, nama, nomor
