@@ -16,7 +16,7 @@ tab1, tab2 = st.tabs(["📘 Referensi Renamer", "📗 Unifikasi Renamer"])
 with tab1:
     st.title("PDF Referensi Renamer — batch mode")
     st.markdown(
-        "Upload one or more PDF files. The app will extract the `Referensi` string (e.g. `Jidoka-2025-11C`) "
+        "Upload one or more PDF files. The app will extract the `Referensi` string (e.g. `Tenant-2025-11C`) "
         "from the PDF text and provide renamed downloads. If no referensi is found the original filename is kept "
         "with a `NO-REFERENSI` prefix."
     )
