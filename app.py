@@ -6,7 +6,7 @@ from collections import defaultdict
 import streamlit as st
 import pdfplumber
 
-st.set_page_config(page_title="PDF Renamer Tools", layout="wide")
+st.set_page_config(page_icon="🐰", page_title="Bunny Name", layout="wide")
 
 tab1, tab2 = st.tabs(["📘 Referensi Renamer", "📗 Unifikasi Renamer"])
 
